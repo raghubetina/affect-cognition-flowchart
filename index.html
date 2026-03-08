@@ -21,7 +21,9 @@
       }
 
       body {
+        min-height: 100dvh;
         margin: 0;
+        overflow: hidden;
         font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
         color: var(--ink);
         background:
@@ -31,8 +33,13 @@
       }
 
       main {
-        width: min(1500px, calc(100vw - 32px));
-        margin: 24px auto 42px;
+        width: min(1600px, calc(100vw - 20px));
+        height: calc(100dvh - 20px);
+        min-height: 0;
+        margin: 10px auto;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: 12px;
       }
 
       .card {
@@ -43,13 +50,12 @@
       }
 
       .hero {
-        padding: 28px 30px 24px;
-        margin-bottom: 18px;
+        padding: 18px 22px 14px;
       }
 
       h1 {
-        margin: 0 0 10px;
-        font-size: clamp(2rem, 2.9vw, 3.2rem);
+        margin: 0 0 8px;
+        font-size: clamp(1.65rem, 2vw, 2.35rem);
         line-height: 1.05;
         letter-spacing: 0.01em;
       }
@@ -61,28 +67,32 @@
       }
 
       p {
-        margin: 0 0 10px;
-        line-height: 1.58;
+        margin: 0 0 8px;
+        line-height: 1.48;
       }
 
       .hero p {
-        max-width: 74ch;
+        max-width: none;
+        font-size: 0.99rem;
+      }
+
+      .hero p:last-child {
+        margin-bottom: 0;
       }
 
       .chart {
-        min-height: 100dvh;
-        display: flex;
-        flex-direction: column;
-        padding: 18px;
+        min-height: 0;
+        padding: 12px;
+        overflow: hidden;
       }
 
       .chart-inner {
-        flex: 1;
+        height: 100%;
         min-width: 0;
         min-height: 0;
         overflow: auto;
         overscroll-behavior: contain;
-        padding: 16px;
+        padding: 18px;
         border-radius: 14px;
         background: linear-gradient(180deg, #fffefb, #faf5ea);
       }
@@ -773,6 +783,7 @@ flowchart TD
       const closeButton = document.getElementById("node-modal-close");
       const chartInner = document.querySelector(".chart-inner");
       const mermaidMount = document.querySelector(".mermaid");
+      let didSetInitialChartScroll = false;
 
       function openModal(nodeId) {
         const entry = detailMap[nodeId] || {
@@ -795,7 +806,7 @@ flowchart TD
 
       function applyInitialChartWidth() {
         const svg = mermaidMount.querySelector("svg");
-        if (!svg) {
+        if (!svg || chartInner.clientWidth === 0) {
           requestAnimationFrame(applyInitialChartWidth);
           return;
         }
@@ -805,6 +816,31 @@ flowchart TD
         svg.style.height = "auto";
         svg.style.maxWidth = "none";
         mermaidMount.style.width = `${targetWidth}px`;
+
+        if (!didSetInitialChartScroll) {
+          requestAnimationFrame(() => {
+            const startNode = Array.from(svg.querySelectorAll(".node")).find((node) => {
+              const text = (node.textContent || "").replace(/\s+/g, " ").trim();
+              return text.startsWith("Start") || text.includes("Mood or emotion induced");
+            });
+
+            if (startNode) {
+              const nodeRect = startNode.getBoundingClientRect();
+              const containerRect = chartInner.getBoundingClientRect();
+              const centeredLeft =
+                chartInner.scrollLeft +
+                (nodeRect.left - containerRect.left) +
+                nodeRect.width / 2 -
+                containerRect.width / 2;
+              chartInner.scrollLeft = Math.max(0, centeredLeft);
+            } else {
+              chartInner.scrollLeft = Math.max(0, (chartInner.scrollWidth - chartInner.clientWidth) / 2);
+            }
+
+            chartInner.scrollTop = 0;
+            didSetInitialChartScroll = true;
+          });
+        }
       }
 
       window.nodeModal = openModal;
