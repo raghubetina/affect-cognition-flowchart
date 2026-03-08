@@ -111,6 +111,14 @@
         cursor: pointer;
       }
 
+      .mermaid .node:focus rect,
+      .mermaid .node:focus path,
+      .mermaid .node:focus polygon,
+      .mermaid .node:focus ellipse {
+        stroke-width: 2.4px;
+        filter: brightness(0.98);
+      }
+
       .mermaid .node rect,
       .mermaid .node path,
       .mermaid .node polygon,
@@ -235,11 +243,12 @@
       <section class="card hero">
         <h1>Affect-Cognition Flowchart</h1>
         <p>
-          This is an attempt at turning Gerald L. Clore and
-          Alexander J. Schiller's chapter on the affect-cognition connection into
-          an interactive flowchart that let's you trace:
-          given a mood or emotion manipulation, what kind of effect should you
-          expect, and why?
+          This interactive flowchart turns Gerald L. Clore and
+          Alexander J. Schiller's chapter on the affect-cognition connection
+          into a decision aid: given a mood or emotion manipulation, what kind
+          of effect should you expect, and why? It is a synthesis of the
+          chapter's logic rather than a figure reproduced from the book, so it
+          works best as a heuristic for tracing likely effects.
         </p>
         <p>
           <strong>How to use it:</strong> start at the top and follow the branch
@@ -262,22 +271,22 @@ flowchart TD
     A -->|No| Q{"2. When is mood introduced<br/>relative to the task?<br/>(pp. 534-540)"}
 
     Q -->|Before reading or before target is processed| P["Likely object: processing style<br/>Mood shapes how material is handled<br/>(pp. 538-541)"]
-    Q -->|After target is salient but before thoughts are externalized| R{"3. By the dependent variable, what feels most salient?<br/>(pp. 534-537, 542)"}
+    Q -->|After target is salient but before thoughts are externalized| R{"3. By the time of judgment,<br/>what feels most salient?<br/>(pp. 534-537, 542)"}
     Q -->|After thought-listing or reflection| J["Likely object: own thoughts<br/>Self-validation branch<br/>(pp. 537, 540)"]
     Q -->|After response-style priming| P
 
     R -->|External target| T["Affect read as about target<br/>Classic carryover<br/>(pp. 534-536)"]
-    R -->|Current take on target| J
+    R -->|Current thoughts about target| J
 
     T --> T2{"Specific emotion?<br/>(pp. 535-536)"}
-    T2 -->|No: generic positive or negative mood| TG["General valence carryover<br/>Positive = better; negative = worse<br/>(pp. 534-535)"]
+    T2 -->|No clear specific emotion| TG["General valence carryover<br/>Positive = better; negative = worse<br/>(pp. 534-535)"]
     T2 -->|Other specific emotion| TO["Use appraisal match<br/>Ask what the emotion is about<br/>(pp. 535-536)"]
     T2 -->|Sadness| TS["Outcomes, effort, loss<br/>Endowment / hill-bottom<br/>(pp. 535-536)"]
     T2 -->|Anger| TA["Blame, agency<br/>Human-caused events<br/>(p. 535)"]
     T2 -->|Fear| TF["Threat, danger, risk<br/>Balcony / hill-top<br/>(p. 536)"]
     T2 -->|Disgust| TD["Contamination, taint<br/>Moral severity / cleansing<br/>(pp. 535-536)"]
 
-    J --> JV{"Affective cue?<br/>Positive or negative?<br/>(pp. 537, 540, 542)"}
+    J --> JV{"Positive or negative affect?<br/>(pp. 537, 540, 542)"}
     JV -->|Positive affect| JVP["Validation / confidence<br/>'Go' to current thought<br/>(pp. 537, 540)"]
     JV -->|Negative affect| JVN["Invalidation / doubt<br/>'Stop' to current thought<br/>(pp. 537, 540)"]
     JVP --> J2{"Accessible thought?<br/>Positive or negative?"}
@@ -287,7 +296,7 @@ flowchart TD
     J3 -->|Positive| JM["Less positive or less confident<br/>Weakens positive thought<br/>(pp. 537, 540)"]
     J3 -->|Negative| JL["Less extreme or more tentative<br/>Weakens negative thought<br/>(pp. 536-537)"]
 
-    P --> PV{"Affective cue?<br/>Positive or negative?<br/>(pp. 539-542)"}
+    P --> PV{"Positive or negative affect?<br/>(pp. 539-542)"}
     PV -->|Positive affect| PVP["'Go' signal<br/>Use accessible style<br/>(pp. 539-542)"]
     PV -->|Negative affect| PVN["'Stop' signal<br/>Interrupt accessible style<br/>(pp. 539-542)"]
     PVP --> P2{"Dominant style?"}
@@ -376,7 +385,7 @@ flowchart TD
             <h3>What the chapter is trying to overturn</h3>
             <p>The authors argue that you should not jump straight from <em>positive mood</em> to <em>positive judgment</em>, or from <em>negative mood</em> to <em>careful thinking</em>. That shortcut misses the chapter's main insight. Affect works by supplying information, and the meaning of that information depends on the context in which it is read.</p>
             <h3>What to ask next</h3>
-            <p>From here the chapter says to ask: was the feeling attributed away, when did it enter the procedure, and what seemed most salient by the time the dependent variable was measured? Those three questions do most of the predictive work.</p>
+            <p>From here the chapter says to ask: was the feeling attributed away, when did it enter the procedure, and what seemed most salient by the time the judgment was made? Those three questions do most of the predictive work.</p>
             <p class="refs">Key references: pp. 532-533, 542.</p>
           `
         },
@@ -437,7 +446,7 @@ flowchart TD
           `
         },
         R: {
-          title: "By the dependent variable, what feels most salient?",
+          title: "By the time of judgment, what feels most salient?",
           body: `
             <p>This node captures a general rule running through the chapter: the effect of affect depends on what the feeling seems to be about at the decisive moment.</p>
             <h3>What is being decided here?</h3>
@@ -571,7 +580,7 @@ flowchart TD
           `
         },
         JV: {
-          title: "Affective cue within the self-validation branch",
+          title: "Positive or negative affect within the self-validation branch",
           body: `
             <p>Once one's own thoughts are salient, the next question is not "is the mood positive or negative?" by itself. The right question is: what is the mood doing to the person's confidence in those thoughts?</p>
             <h3>The chapter's proposal</h3>
@@ -663,7 +672,7 @@ flowchart TD
           `
         },
         PV: {
-          title: "Affective cue within the processing-style branch",
+          title: "Positive or negative affect within the processing-style branch",
           body: `
             <p>This node expresses the chapter's affective processing principle. In task situations, affect can function as feedback about the current cognitive orientation rather than as information about the outside world.</p>
             <h3>Short version</h3>
@@ -784,6 +793,7 @@ flowchart TD
       const chartInner = document.querySelector(".chart-inner");
       const mermaidMount = document.querySelector(".mermaid");
       let didSetInitialChartScroll = false;
+      let didEnhanceChartAccessibility = false;
 
       function openModal(nodeId) {
         const entry = detailMap[nodeId] || {
@@ -841,6 +851,27 @@ flowchart TD
             didSetInitialChartScroll = true;
           });
         }
+
+        if (!didEnhanceChartAccessibility) {
+          enhanceChartAccessibility(svg);
+          didEnhanceChartAccessibility = true;
+        }
+      }
+
+      function enhanceChartAccessibility(svg) {
+        const nodes = svg.querySelectorAll(".node");
+        nodes.forEach((node) => {
+          const label = (node.textContent || "").replace(/\s+/g, " ").trim();
+          node.setAttribute("tabindex", "0");
+          node.setAttribute("role", "button");
+          node.setAttribute("aria-label", label ? `Open details for ${label}` : "Open node details");
+          node.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              node.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+            }
+          });
+        });
       }
 
       window.nodeModal = openModal;
