@@ -37,9 +37,6 @@
         height: calc(100dvh - 20px);
         min-height: 0;
         margin: 10px auto;
-        display: grid;
-        grid-template-rows: auto minmax(0, 1fr);
-        gap: 12px;
       }
 
       .card {
@@ -49,7 +46,13 @@
         box-shadow: var(--shadow);
       }
 
-      .hero {
+      .chart-intro {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        z-index: 2;
+        width: 470px;
+        max-width: calc(100vw - 88px);
         padding: 18px 22px 14px;
       }
 
@@ -71,12 +74,12 @@
         line-height: 1.48;
       }
 
-      .hero p {
+      .chart-intro p {
         max-width: none;
         font-size: 0.99rem;
       }
 
-      .hero p:last-child {
+      .chart-intro p:last-child {
         margin-bottom: 0;
       }
 
@@ -118,12 +121,14 @@
       }
 
       .chart {
+        height: 100%;
         min-height: 0;
         padding: 12px;
         overflow: hidden;
       }
 
       .chart-inner {
+        position: relative;
         height: 100%;
         min-width: 0;
         min-height: 0;
@@ -132,6 +137,12 @@
         padding: 18px;
         border-radius: 14px;
         background: linear-gradient(180deg, #fffefb, #faf5ea);
+      }
+
+      .chart-stage {
+        position: relative;
+        width: max-content;
+        min-height: 100%;
       }
 
       .mermaid {
@@ -277,31 +288,31 @@
   </head>
   <body>
     <main>
-      <section class="card hero">
-        <h1>Affect-Cognition Flowchart</h1>
-        <p>
-          This is a visual exploration of Gerald L. Clore and
-          Alexander J. Schiller's chapter on the affect-cognition connection. Given a mood or emotion manipulation, what kind
-          of effect should you expect, and why? It is my synthesis of the
-          chapter's logic rather than a figure reproduced from the book, so any errors are mine.
-        </p>
-        <p>
-          <strong>How to use it:</strong> start at the top and follow the branch
-          that best matches the method you are thinking about. <strong>Every
-          node in the diagram is clickable.</strong> Click a node to open a
-          modal with a fuller explanation, the key examples or case studies, and
-          the supporting textbook page numbers.
-        </p>
-        <div class="legend" aria-label="Diagram legend">
-          <span class="legend-item"><span class="legend-swatch diamond" aria-hidden="true"></span>Decision point</span>
-          <span class="legend-item"><span class="legend-swatch cool" aria-hidden="true"></span>Pathway or likely object</span>
-          <span class="legend-item"><span class="legend-swatch" aria-hidden="true"></span>Predicted outcome or example pattern</span>
-        </div>
-      </section>
-
       <section class="card chart">
         <div class="chart-inner">
-          <pre class="mermaid">
+          <div class="chart-stage">
+            <section class="card chart-intro">
+              <h1>Affect-Cognition Flowchart</h1>
+              <p>
+                This is a visual exploration of Gerald L. Clore and
+                Alexander J. Schiller's chapter on the affect-cognition connection. Given a mood or emotion manipulation, what kind
+                of effect should you expect, and why? It is my synthesis of the
+                chapter's logic rather than a figure reproduced from the book, so any errors are mine.
+              </p>
+              <p>
+                <strong>How to use it:</strong> start at the top and follow the branch
+                that best matches the method you are thinking about. <strong>Every
+                node in the diagram is clickable.</strong> Click a node to open a
+                modal with a fuller explanation, the key examples or case studies, and
+                the supporting textbook page numbers.
+              </p>
+              <div class="legend" aria-label="Diagram legend">
+                <span class="legend-item"><span class="legend-swatch diamond" aria-hidden="true"></span>Decision point</span>
+                <span class="legend-item"><span class="legend-swatch cool" aria-hidden="true"></span>Pathway or likely object</span>
+                <span class="legend-item"><span class="legend-swatch" aria-hidden="true"></span>Predicted outcome or example pattern</span>
+              </div>
+            </section>
+            <pre class="mermaid">
 flowchart TD
     S["Start<br/>Mood or emotion induced<br/>(pp. 532-533, 542)"]
     A{"1. Attributed away<br/>or mood made focal?<br/>(pp. 534-535)"}
@@ -389,7 +400,8 @@ flowchart TD
     class A,Q,R,T2,JV,J2,J3,PV,P2,P3 warm;
     class T,J,P cool;
     class AX,TG,TO,TS,TA,TF,TD,JVP,JVN,JP,JN,JM,JL,PVP,PVN,PG,PL,PM,PR,PN plain;
-          </pre>
+            </pre>
+          </div>
         </div>
       </section>
 
@@ -849,7 +861,13 @@ flowchart TD
       const modalBody = document.getElementById("node-modal-body");
       const closeButton = document.getElementById("node-modal-close");
       const chartInner = document.querySelector(".chart-inner");
+      const chartStage = document.querySelector(".chart-stage");
+      const introPanel = document.querySelector(".chart-intro");
       const mermaidMount = document.querySelector(".mermaid");
+      const introGap = 96;
+      const introStagePadding = 28;
+      const introLeftShift = 220;
+      const introTopShift = 19;
       let didSetInitialChartScroll = false;
       let didEnhanceChartAccessibility = false;
 
@@ -872,6 +890,24 @@ flowchart TD
         document.body.classList.remove("modal-open");
       }
 
+      function findStartNode(svg) {
+        return Array.from(svg.querySelectorAll(".node")).find((node) => {
+          const text = (node.textContent || "").replace(/\s+/g, " ").trim();
+          return text.startsWith("Start") || text.includes("Mood or emotion induced");
+        });
+      }
+
+      function positionIntroPanel(startNode) {
+        const startRect = startNode.getBoundingClientRect();
+        const stageRect = chartStage.getBoundingClientRect();
+        const introWidth = introPanel.offsetWidth;
+        const introHeight = introPanel.offsetHeight;
+        const left = Math.max(24, startRect.left - stageRect.left - introWidth - introGap - introLeftShift);
+        const top = Math.max(5, startRect.top - stageRect.top - (introHeight - startRect.height) / 2 - introTopShift);
+        introPanel.style.left = `${Math.round(left)}px`;
+        introPanel.style.top = `${Math.round(top)}px`;
+      }
+
       function applyInitialChartWidth() {
         const svg = mermaidMount.querySelector("svg");
         if (!svg || chartInner.clientWidth === 0) {
@@ -880,30 +916,33 @@ flowchart TD
         }
 
         const targetWidth = Math.max(Math.round(chartInner.clientWidth * 2.35), 2200);
+        const introOffset = introPanel.offsetWidth + introGap + introStagePadding;
         svg.style.width = `${targetWidth}px`;
         svg.style.height = "auto";
         svg.style.maxWidth = "none";
         mermaidMount.style.width = `${targetWidth}px`;
+        mermaidMount.style.marginLeft = `${Math.round(introOffset)}px`;
+
+        const startNode = findStartNode(svg);
+        if (!startNode) {
+          requestAnimationFrame(applyInitialChartWidth);
+          return;
+        }
+        positionIntroPanel(startNode);
 
         if (!didSetInitialChartScroll) {
           requestAnimationFrame(() => {
-            const startNode = Array.from(svg.querySelectorAll(".node")).find((node) => {
-              const text = (node.textContent || "").replace(/\s+/g, " ").trim();
-              return text.startsWith("Start") || text.includes("Mood or emotion induced");
-            });
-
-            if (startNode) {
-              const nodeRect = startNode.getBoundingClientRect();
-              const containerRect = chartInner.getBoundingClientRect();
-              const centeredLeft =
-                chartInner.scrollLeft +
-                (nodeRect.left - containerRect.left) +
-                nodeRect.width / 2 -
-                containerRect.width / 2;
-              chartInner.scrollLeft = Math.max(0, centeredLeft);
-            } else {
-              chartInner.scrollLeft = Math.max(0, (chartInner.scrollWidth - chartInner.clientWidth) / 2);
-            }
+            const nodeRect = startNode.getBoundingClientRect();
+            const containerRect = chartInner.getBoundingClientRect();
+            const introRect = introPanel.getBoundingClientRect();
+            const groupLeft = Math.min(introRect.left, nodeRect.left);
+            const groupRight = Math.max(introRect.right, nodeRect.right);
+            const centeredLeft =
+              chartInner.scrollLeft +
+              (groupLeft - containerRect.left) +
+              (groupRight - groupLeft) / 2 -
+              containerRect.width / 2;
+            chartInner.scrollLeft = Math.max(0, centeredLeft);
 
             chartInner.scrollTop = 0;
             didSetInitialChartScroll = true;
