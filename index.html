@@ -33,7 +33,7 @@
       }
 
       main {
-        width: min(1600px, calc(100vw - 20px));
+        width: calc(100vw - 20px);
         height: calc(100dvh - 20px);
         min-height: 0;
         margin: 10px auto;
@@ -78,6 +78,43 @@
 
       .hero p:last-child {
         margin-bottom: 0;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.35;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .legend-swatch {
+        width: 14px;
+        height: 14px;
+        flex: 0 0 14px;
+        border: 1.2px solid #8a816f;
+        background: #f9f6ef;
+        border-radius: 4px;
+      }
+
+      .legend-swatch.diamond {
+        background: #f4e1d4;
+        border-color: #7a3e1d;
+        border-radius: 2px;
+        transform: rotate(45deg);
+      }
+
+      .legend-swatch.cool {
+        background: #e8efe5;
+        border-color: #35533f;
       }
 
       .chart {
@@ -248,7 +285,10 @@
           into a decision aid: given a mood or emotion manipulation, what kind
           of effect should you expect, and why? It is a synthesis of the
           chapter's logic rather than a figure reproduced from the book, so it
-          works best as a heuristic for tracing likely effects.
+          works best as a heuristic for tracing likely effects. Its core idea
+          is the <em>affective immediacy principle</em>: feelings are
+          experienced as being about whatever is most salient in mind at the
+          time.
         </p>
         <p>
           <strong>How to use it:</strong> start at the top and follow the branch
@@ -257,6 +297,11 @@
           modal with a fuller explanation, the key examples or case studies, and
           the supporting textbook page numbers.
         </p>
+        <div class="legend" aria-label="Diagram legend">
+          <span class="legend-item"><span class="legend-swatch diamond" aria-hidden="true"></span>Decision point</span>
+          <span class="legend-item"><span class="legend-swatch cool" aria-hidden="true"></span>Pathway or likely object</span>
+          <span class="legend-item"><span class="legend-swatch" aria-hidden="true"></span>Predicted outcome or example pattern</span>
+        </div>
       </section>
 
       <section class="card chart">
@@ -270,13 +315,11 @@ flowchart TD
     A -->|Yes| AX["Carryover weak or gone<br/>Weather / fear faces / mood checks<br/>(pp. 534-535)"]
     A -->|No| Q{"2. When is mood introduced<br/>relative to the task?<br/>(pp. 534-540)"}
 
-    Q -->|Before reading or before target is processed| P["Likely object: processing style<br/>Mood shapes how material is handled<br/>(pp. 538-541)"]
-    Q -->|After target is salient but before thoughts are externalized| R{"3. By the time of judgment,<br/>what feels most salient?<br/>(pp. 534-537, 542)"}
-    Q -->|After thought-listing or reflection| J["Likely object: own thoughts<br/>Self-validation branch<br/>(pp. 537, 540)"]
-    Q -->|After response-style priming| P
+    Q -->|Before reading, before target processing,<br/>or after response-style priming| P["Likely object: processing style<br/>Mood shapes how material is handled<br/>(pp. 538-541)"]
+    Q -->|After target or prior reactions are already salient| R{"3. By the time of judgment,<br/>what feels most salient?<br/>(pp. 534-537, 542)"}
 
-    R -->|External target| T["Affect read as about target<br/>Classic carryover<br/>(pp. 534-536)"]
-    R -->|Current thoughts about target| J
+    R -->|External target still focal| T["Affect read as about target<br/>Classic carryover<br/>(pp. 534-536)"]
+    R -->|Own thoughts now focal| J["Likely object: own thoughts<br/>Self-validation branch<br/>(pp. 537, 540)"]
 
     T --> T2{"Specific emotion?<br/>(pp. 535-536)"}
     T2 -->|No clear specific emotion| TG["General valence carryover<br/>Positive = better; negative = worse<br/>(pp. 534-535)"]
@@ -382,11 +425,13 @@ flowchart TD
           title: "Start: mood or emotion is induced",
           body: `
             <p>This node marks the intervention point. Something has happened that changes affect: a sunny or rainy day, emotional music, an emotional memory, a film clip, a facial-expression manipulation, or a more specific emotion such as fear, anger, sadness, or disgust.</p>
+            <h3>Core principle: affective immediacy</h3>
+            <p>The chapter's unifying idea is that affect is experienced as being about whatever is in mind at the time. That is why the same pleasant or unpleasant feeling can sometimes color an external target, sometimes validate one's own thoughts, and sometimes regulate a currently accessible style of thinking.</p>
             <h3>What the chapter is trying to overturn</h3>
             <p>The authors argue that you should not jump straight from <em>positive mood</em> to <em>positive judgment</em>, or from <em>negative mood</em> to <em>careful thinking</em>. That shortcut misses the chapter's main insight. Affect works by supplying information, and the meaning of that information depends on the context in which it is read.</p>
             <h3>What to ask next</h3>
             <p>From here the chapter says to ask: was the feeling attributed away, when did it enter the procedure, and what seemed most salient by the time the judgment was made? Those three questions do most of the predictive work.</p>
-            <p class="refs">Key references: pp. 532-533, 542.</p>
+            <p class="refs">Key references: pp. 532-533, 537, 542.</p>
           `
         },
         A: {
@@ -426,10 +471,8 @@ flowchart TD
             <p>If mood is induced early, before the participant has really engaged with the material, it often shapes the mode of processing used while reading or deciding. If mood is induced later, after the participant has already formed reactions or listed thoughts, the mood is more likely to comment on those reactions rather than on the target itself.</p>
             <h3>Typical timing routes</h3>
             <ul>
-              <li><strong>Before reading or before target processing:</strong> mood often influences processing style while the person is handling the task.</li>
-              <li><strong>After the target is already salient:</strong> either the target itself or the person's current take on it may become the object of affect.</li>
-              <li><strong>After thought-listing or reflection:</strong> one's own thoughts often become the likely object, producing self-validation effects.</li>
-              <li><strong>After a response-style prime:</strong> the accessible style becomes the likely target of the feeling.</li>
+              <li><strong>Before reading, before target processing, or after a response-style prime:</strong> mood often influences processing style while the person is handling the task.</li>
+              <li><strong>After the target or prior reactions are already salient:</strong> the procedure moves to a salience question, because either the target itself or the person's own thoughts may now be the object of affect.</li>
             </ul>
             <p class="refs">Key references: pp. 534-540.</p>
           `
@@ -442,17 +485,19 @@ flowchart TD
             <p>Older summaries tended to say that happy mood broadens thought, increases heuristics, and promotes creativity, whereas sad mood narrows thought and encourages systematic processing.</p>
             <h3>What this chapter adds</h3>
             <p>The authors argue that those patterns are often real, but they are not fixed consequences of happiness or sadness themselves. Instead, affect says "go" or "stop" to the currently accessible style. Since global and heuristic processing are often the default, positive mood often appears to broaden thought. But if local or systematic processing has been primed first, positive mood can support that instead.</p>
+            <h3>Phenomena the chapter explains with this logic</h3>
+            <p>The processing branch is meant to cover the chapter's main examples under affect-as-feedback: global-local focus, stereotyping, broadened attention, pre-message persuasion, creativity, judgment heuristics such as conjunction errors and anchoring, and implicit-explicit attitude correspondence through trust in intuition.</p>
             <p class="refs">Key references: pp. 538-542.</p>
           `
         },
         R: {
           title: "By the time of judgment, what feels most salient?",
           body: `
-            <p>This node captures a general rule running through the chapter: the effect of affect depends on what the feeling seems to be about at the decisive moment.</p>
+            <p>This node is the flowchart's clearest expression of the affective immediacy principle: the effect of affect depends on what the feeling seems to be about at the decisive moment.</p>
             <h3>What is being decided here?</h3>
-            <p>Once attribution has been handled and timing has been located, you still need to ask what is in the foreground when the actual judgment is made. In many procedures, the competition is between the external target and the person's own current take on that target.</p>
+            <p>Once attribution has been handled and timing has been located, you still need to ask what is in the foreground when the actual judgment is made. In many procedures, the competition is between the external target and the person's own current thoughts or reactions about that target.</p>
             <h3>Why this matters</h3>
-            <p>Two studies can use the same mood induction and the same nominal target, yet produce different outcomes, simply because one method keeps the target salient while the other makes the participant's own thoughts more salient.</p>
+            <p>Two studies can use the same mood induction and the same nominal target, yet produce different outcomes, simply because one method keeps the target salient while the other makes the participant's own thoughts more salient. Thought-listing and reflection are especially important because they often shift the object of affect away from the target and onto one's own reactions.</p>
             <p class="refs">Key references: pp. 534-537, 542.</p>
           `
         },
@@ -462,6 +507,8 @@ flowchart TD
             <p>This is the self-validation side of the chapter. Affect is no longer mainly coloring the target itself. Instead it is operating as feedback about the person's own currently accessible thought, judgment, or inclination.</p>
             <h3>Why this is a big deal</h3>
             <p>This is the key move that explains the chapter's most striking reversals. If the person is already leaning negative, positive affect can validate that negativity and make the final judgment <em>more</em> negative, not less.</p>
+            <h3>When this branch becomes likely</h3>
+            <p>This is especially likely after thought-listing, reflection, or any procedure that makes the participant's own reactions more salient than the target itself.</p>
             <h3>Main examples</h3>
             <ul>
               <li>The Lance Armstrong and Alex Rodriguez studies.</li>
@@ -688,6 +735,8 @@ flowchart TD
             <p>This node predicts that positive affect will support the currently accessible processing style. If the default style is global or heuristic, happy mood often looks broad and intuitive. If a local or systematic style has been primed, happy mood can support that instead.</p>
             <h3>Why this is so important</h3>
             <p>It means that positive affect is not inherently broad, creative, or careless. Those outcomes occur only when the currently accessible style is the one being amplified.</p>
+            <h3>Extension the chapter emphasizes</h3>
+            <p>The same logic applies to trust in intuition. When trusting intuition is accessible, positive affect increases reliance on it and raises implicit-explicit attitude correspondence. When distrust of intuition is accessible instead, positive affect can empower that stance and lower correspondence.</p>
             <p class="refs">Key references: pp. 539-542.</p>
           `
         },
@@ -725,6 +774,7 @@ flowchart TD
               <li>Broadened attention.</li>
               <li>Less discrimination of weak versus strong arguments in pre-message persuasion tasks.</li>
               <li>Greater reliance on stereotypes in ordinary cases.</li>
+              <li>More heuristic judgment when shortcut processing is accessible, including conjunction-type errors.</li>
               <li>Often more creativity, because global processing is usually the dominant orientation.</li>
             </ul>
             <h3>Important caveat</h3>
@@ -741,6 +791,7 @@ flowchart TD
               <li>Local primes made happy mood produce more local attention rather than broader attention.</li>
               <li>Systematic primes erased or reversed some classic heuristic mood effects.</li>
               <li>Among chronic egalitarians, positive affect reduced rather than increased stereotyping because the accessible response was counterstereotypic.</li>
+              <li>When distrust of intuition was accessible, positive affect reduced rather than increased implicit-explicit attitude correspondence.</li>
             </ul>
             <h3>Why it matters</h3>
             <p>This is one of the chapter's clearest arguments against a simple "happy = broad" rule.</p>
@@ -753,6 +804,8 @@ flowchart TD
             <p>Here negative affect interrupts the ordinary default style. Because the default is often broad, heuristic, or category-based, the observed outcome looks like more care, more checking, and more discrimination.</p>
             <h3>Best-known example</h3>
             <p>In the classic persuasion pattern where mood is induced before message exposure, sad participants distinguished strong from weak arguments more than happy participants did.</p>
+            <h3>Other examples</h3>
+            <p>The same interruption logic helps explain reduced stereotyping, less broadened attention, and weaker reliance on heuristic shortcuts when the usual default style is the one being challenged.</p>
             <h3>Interpretive payoff</h3>
             <p>The chapter treats this not as proof that sadness is inherently systematic, but as evidence that negative affect can interrupt the usual heuristic default.</p>
             <p class="refs">Key references: pp. 538-541.</p>
@@ -767,6 +820,7 @@ flowchart TD
               <li>Sad mood after local priming improved creativity, because the local focus that usually suppresses creativity was interrupted.</li>
               <li>Local priming changed broadened-attention findings.</li>
               <li>Systematic priming changed anchoring and conjunction-fallacy results.</li>
+              <li>Pre-message persuasion effects flipped when the ordinarily dominant style was no longer the one being interrupted.</li>
             </ul>
             <h3>Why this branch matters</h3>
             <p>It shows that the effects of affect on thinking are not fixed traits of the mood itself. They depend on what style is currently dominant when affect delivers its "stop" signal.</p>
@@ -914,7 +968,6 @@ flowchart TD
         }
       });
 
-      window.addEventListener("resize", applyInitialChartWidth);
     </script>
   </body>
 </html>
