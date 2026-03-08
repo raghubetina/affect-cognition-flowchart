@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Affect-Cognition Flowchart v5</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f3efe5;
+        --paper: #fffdf8;
+        --ink: #1f1d19;
+        --muted: #656056;
+        --accent: #7a3e1d;
+        --line: #dad1c1;
+        --shadow: 0 20px 50px rgba(41, 31, 17, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(122, 62, 29, 0.08), transparent 22%),
+          radial-gradient(circle at bottom right, rgba(53, 83, 63, 0.06), transparent 26%),
+          linear-gradient(180deg, #faf7f1 0%, var(--bg) 100%);
+      }
+
+      main {
+        width: min(1500px, calc(100vw - 32px));
+        margin: 24px auto 42px;
+      }
+
+      .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 28px 30px 24px;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 2.9vw, 3.2rem);
+        line-height: 1.05;
+        letter-spacing: 0.01em;
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 1.35rem;
+        line-height: 1.15;
+      }
+
+      p {
+        margin: 0 0 10px;
+        line-height: 1.58;
+      }
+
+      .meta {
+        color: var(--muted);
+      }
+
+      .chart {
+        padding: 18px;
+        overflow: auto;
+        margin-bottom: 18px;
+      }
+
+      .chart-inner {
+        min-width: 1260px;
+        padding: 12px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #fffefb, #faf5ea);
+      }
+
+      .mermaid {
+        min-width: 1200px;
+      }
+
+      .mermaid svg {
+        max-width: none;
+        height: auto;
+      }
+
+      .mermaid .node {
+        cursor: pointer;
+      }
+
+      .mermaid .node rect,
+      .mermaid .node path,
+      .mermaid .node polygon,
+      .mermaid .node ellipse {
+        transition:
+          transform 140ms ease,
+          filter 140ms ease,
+          stroke-width 140ms ease;
+      }
+
+      .mermaid .node:hover rect,
+      .mermaid .node:hover path,
+      .mermaid .node:hover polygon,
+      .mermaid .node:hover ellipse {
+        filter: brightness(0.98);
+        stroke-width: 2.2px;
+      }
+
+      ul {
+        margin: 10px 0 0 18px;
+        padding: 0;
+      }
+
+      li {
+        margin: 0 0 8px;
+        line-height: 1.5;
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.92em;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .modal-open {
+        overflow: hidden;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(31, 29, 25, 0.55);
+        backdrop-filter: blur(4px);
+      }
+
+      .modal-backdrop.is-open {
+        display: flex;
+      }
+
+      .modal {
+        width: min(840px, calc(100vw - 32px));
+        max-height: calc(100vh - 48px);
+        overflow: auto;
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22);
+      }
+
+      .modal-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px 24px 16px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .modal-head h2 {
+        margin: 0;
+        font-size: 1.55rem;
+      }
+
+      .modal-close {
+        appearance: none;
+        border: 1px solid var(--line);
+        background: #fffaf0;
+        color: var(--accent);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .modal-body {
+        padding: 20px 24px 24px;
+      }
+
+      .modal-body h3 {
+        margin: 18px 0 8px;
+        color: var(--accent);
+        font-size: 1rem;
+        line-height: 1.2;
+      }
+
+      .modal-body p:first-child {
+        margin-top: 0;
+      }
+
+      .modal-body ul {
+        margin-top: 12px;
+      }
+
+      .refs {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card hero">
+        <h1>Affect-Cognition Flowchart v5</h1>
+        <p>
+          This page is an interactive study guide to Gerald L. Clore and
+          Alexander J. Schiller's chapter on the affect-cognition connection. It
+          turns the chapter's core argument into a decision flow you can trace:
+          given a mood or emotion manipulation, what kind of effect should you
+          expect, and why?
+        </p>
+        <p>
+          The chart is not a figure from the book. It is a synthesis of the
+          chapter's main ideas about attribution, timing, salience,
+          self-validation, and processing style. The aim is to help you connect
+          the chapter's many separate findings into one predictive framework.
+        </p>
+        <p>
+          <strong>How to use it:</strong> start at the top and follow the branch
+          that best matches the method you are thinking about. <strong>Every
+          node in the diagram is clickable.</strong> Click a node to open a
+          modal with a fuller explanation, the key examples or case studies, and
+          the supporting textbook page numbers.
+        </p>
+        <p>
+          <strong>How to read the predictions:</strong> this chart does not
+          assume that positive mood always has one effect and negative mood
+          always has another. Its central question is what the feeling is being
+          read as <em>about</em> at the decisive moment. That is the key to
+          understanding why the same mood can produce different, and sometimes
+          reversed, outcomes across procedures.
+        </p>
+        <p class="meta">Citations use textbook page numbers only.</p>
+      </section>
+
+      <section class="card chart">
+        <div class="chart-inner">
+          <pre class="mermaid">
+flowchart TD
+    S["Start<br/>Mood or emotion induced<br/>(pp. 532-533, 542)"]
+    A{"1. Attributed away<br/>or mood made focal?<br/>(pp. 534-535)"}
+    S --> A
+
+    A -->|Yes| AX["Carryover weak or gone<br/>Weather / fear faces / mood checks<br/>(pp. 534-535)"]
+    A -->|No| Q{"2. When is mood introduced<br/>relative to the task?<br/>(pp. 534-540)"}
+
+    Q -->|Before reading or before target is processed| P["Likely object: processing style<br/>Mood shapes how material is handled<br/>(pp. 538-541)"]
+    Q -->|After target is salient but before thoughts are externalized| R{"3. By the dependent variable, what feels most salient?<br/>(pp. 534-537, 542)"}
+    Q -->|After thought-listing or reflection| J["Likely object: own thoughts<br/>Self-validation branch<br/>(pp. 537, 540)"]
+    Q -->|After response-style priming| P
+
+    R -->|External target| T["Affect read as about target<br/>Classic carryover<br/>(pp. 534-536)"]
+    R -->|Current take on target| J
+
+    T --> T2{"Specific emotion?<br/>(pp. 535-536)"}
+    T2 -->|No: generic positive or negative mood| TG["General valence carryover<br/>Positive = better; negative = worse<br/>(pp. 534-535)"]
+    T2 -->|Other specific emotion| TO["Use appraisal match<br/>Ask what the emotion is about<br/>(pp. 535-536)"]
+    T2 -->|Sadness| TS["Outcomes, effort, loss<br/>Endowment / hill-bottom<br/>(pp. 535-536)"]
+    T2 -->|Anger| TA["Blame, agency<br/>Human-caused events<br/>(p. 535)"]
+    T2 -->|Fear| TF["Threat, danger, risk<br/>Balcony / hill-top<br/>(p. 536)"]
+    T2 -->|Disgust| TD["Contamination, taint<br/>Moral severity / cleansing<br/>(pp. 535-536)"]
+
+    J --> JV{"Affective cue?<br/>Positive or negative?<br/>(pp. 537, 540, 542)"}
+    JV -->|Positive affect| JVP["Validation / confidence<br/>'Go' to current thought<br/>(pp. 537, 540)"]
+    JV -->|Negative affect| JVN["Invalidation / doubt<br/>'Stop' to current thought<br/>(pp. 537, 540)"]
+    JVP --> J2{"Accessible thought?<br/>Positive or negative?"}
+    JVN --> J3{"Accessible thought?<br/>Positive or negative?"}
+    J2 -->|Positive| JP["More positive<br/>More persuaded by strong arguments<br/>(p. 540)"]
+    J2 -->|Negative| JN["More negative or more extreme<br/>Armstrong / A-Rod / distrust<br/>(pp. 536-537)"]
+    J3 -->|Positive| JM["Less positive or less confident<br/>Weakens positive thought<br/>(pp. 537, 540)"]
+    J3 -->|Negative| JL["Less extreme or more tentative<br/>Weakens negative thought<br/>(pp. 536-537)"]
+
+    P --> PV{"Affective cue?<br/>Positive or negative?<br/>(pp. 539-542)"}
+    PV -->|Positive affect| PVP["'Go' signal<br/>Use accessible style<br/>(pp. 539-542)"]
+    PV -->|Negative affect| PVN["'Stop' signal<br/>Interrupt accessible style<br/>(pp. 539-542)"]
+    PVP --> P2{"Dominant style?"}
+    PVN --> P3{"Dominant style?"}
+    P2 -->|Global / heuristic default| PG["More global or heuristic<br/>Broadens and simplifies<br/>(pp. 538-541)"]
+    P2 -->|Local / systematic primed| PL["More local or analytic<br/>Intensifies primed style<br/>(pp. 539-542)"]
+    P2 -->|No dominant style| PN["Weak or absent mood effect<br/>50-50 priming<br/>(p. 540)"]
+    P3 -->|Global / heuristic default| PM["More checking or systematic<br/>Interrupts usual default<br/>(pp. 538-541)"]
+    P3 -->|Local / systematic primed| PR["Can inhibit the primed style<br/>and produce reversals<br/>(pp. 539-542)"]
+    P3 -->|No dominant style| PN
+
+    click S nodeModal "Open details"
+    click A nodeModal "Open details"
+    click AX nodeModal "Open details"
+    click Q nodeModal "Open details"
+    click P nodeModal "Open details"
+    click R nodeModal "Open details"
+    click J nodeModal "Open details"
+    click T nodeModal "Open details"
+    click T2 nodeModal "Open details"
+    click TG nodeModal "Open details"
+    click TO nodeModal "Open details"
+    click TS nodeModal "Open details"
+    click TA nodeModal "Open details"
+    click TF nodeModal "Open details"
+    click TD nodeModal "Open details"
+    click JV nodeModal "Open details"
+    click JVP nodeModal "Open details"
+    click JVN nodeModal "Open details"
+    click J2 nodeModal "Open details"
+    click J3 nodeModal "Open details"
+    click JP nodeModal "Open details"
+    click JN nodeModal "Open details"
+    click JM nodeModal "Open details"
+    click JL nodeModal "Open details"
+    click PV nodeModal "Open details"
+    click PVP nodeModal "Open details"
+    click PVN nodeModal "Open details"
+    click P2 nodeModal "Open details"
+    click P3 nodeModal "Open details"
+    click PG nodeModal "Open details"
+    click PL nodeModal "Open details"
+    click PM nodeModal "Open details"
+    click PR nodeModal "Open details"
+    click PN nodeModal "Open details"
+
+    classDef warm fill:#f4e1d4,stroke:#7a3e1d,color:#2e2018,stroke-width:1.4px;
+    classDef cool fill:#e8efe5,stroke:#35533f,color:#1f2b22,stroke-width:1.4px;
+    classDef plain fill:#f9f6ef,stroke:#8a816f,color:#1f1d19,stroke-width:1.2px;
+
+    class S plain;
+    class A,Q,R,T2,JV,J2,J3,PV,P2,P3 warm;
+    class T,J,P cool;
+    class AX,TG,TO,TS,TA,TF,TD,JVP,JVN,JP,JN,JM,JL,PVP,PVN,PG,PL,PM,PR,PN plain;
+          </pre>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="modal-backdrop" id="node-modal" hidden>
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="node-modal-title"
+      >
+        <div class="modal-head">
+          <h2 id="node-modal-title">Node details</h2>
+          <button class="modal-close" id="node-modal-close" type="button">
+            Close
+          </button>
+        </div>
+        <div class="modal-body" id="node-modal-body"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+      const detailMap = {
+        S: {
+          title: "Start: mood or emotion is induced",
+          body: `
+            <p>This node marks the intervention point. Something has happened that changes affect: a sunny or rainy day, emotional music, an emotional memory, a film clip, a facial-expression manipulation, or a more specific emotion such as fear, anger, sadness, or disgust.</p>
+            <h3>What the chapter is trying to overturn</h3>
+            <p>The authors argue that you should not jump straight from <em>positive mood</em> to <em>positive judgment</em>, or from <em>negative mood</em> to <em>careful thinking</em>. That shortcut misses the chapter's main insight. Affect works by supplying information, and the meaning of that information depends on the context in which it is read.</p>
+            <h3>What to ask next</h3>
+            <p>From here the chapter says to ask: was the feeling attributed away, when did it enter the procedure, and what seemed most salient by the time the dependent variable was measured? Those three questions do most of the predictive work.</p>
+            <p class="refs">Key references: pp. 532-533, 542.</p>
+          `
+        },
+        A: {
+          title: "Attribution gate",
+          body: `
+            <p>This is the first major checkpoint in the chapter. The same feeling can matter a great deal or barely matter at all depending on whether the person treats it as information about the target or as something caused by an irrelevant source.</p>
+            <h3>Core idea</h3>
+            <p>If participants can say, in effect, "I feel this way because of the weather," or "because I just saw something scary," or "because you just asked me about my mood," then the feeling often stops functioning as information about the target they are supposed to judge.</p>
+            <h3>Why this matters</h3>
+            <p>This is one of the chapter's most important correctives to oversimplified mood theory. The mood itself can still be there. What changes is its <em>informational role</em>.</p>
+            <ul>
+              <li>Weather can explain weather-related mood.</li>
+              <li>Awareness of fear-face exposure can explain negative arousal.</li>
+              <li>Repeated mood checks can make the feeling itself the object of attention.</li>
+            </ul>
+            <p class="refs">Key references: pp. 534-535.</p>
+          `
+        },
+        AX: {
+          title: "Carryover weak or gone",
+          body: `
+            <p>This is the predicted result once the feeling has been attributed away. The affect is no longer doing much work on the target judgment because the participant has an alternative explanation for it.</p>
+            <h3>Case study: weather and life satisfaction</h3>
+            <p>In the classic study, people interviewed on bad-weather days reported lower life satisfaction. But when the interviewer first asked about the weather, the effect disappeared. The weather still affected mood, but the mood no longer looked like information about life as a whole.</p>
+            <h3>Case study: fear faces and neutral faces</h3>
+            <p>In the continuous flash-suppression study, unseen fear faces produced negative affect that spilled over onto later evaluations of a neutral face. When people became aware of the true source, that spillover disappeared.</p>
+            <h3>Methodological implication</h3>
+            <p>This is why the chapter warns that aggressive mood manipulation checks can backfire. If you force participants to focus on their feelings too early, you may destroy the very effect you want to observe.</p>
+            <p class="refs">Examples: weather and life satisfaction; fear faces and neutral-face evaluations. pp. 534-535.</p>
+          `
+        },
+        Q: {
+          title: "When is the mood introduced relative to the task?",
+          body: `
+            <p>Timing matters because it changes what is mentally available when the feeling is interpreted. In the chapter's logic, timing is not a separate magical variable. It matters because it alters the likely object of affect.</p>
+            <h3>Why timing changes outcomes</h3>
+            <p>If mood is induced early, before the participant has really engaged with the material, it often shapes the mode of processing used while reading or deciding. If mood is induced later, after the participant has already formed reactions or listed thoughts, the mood is more likely to comment on those reactions rather than on the target itself.</p>
+            <h3>Typical timing routes</h3>
+            <ul>
+              <li><strong>Before reading or before target processing:</strong> mood often influences processing style while the person is handling the task.</li>
+              <li><strong>After the target is already salient:</strong> either the target itself or the person's current take on it may become the object of affect.</li>
+              <li><strong>After thought-listing or reflection:</strong> one's own thoughts often become the likely object, producing self-validation effects.</li>
+              <li><strong>After a response-style prime:</strong> the accessible style becomes the likely target of the feeling.</li>
+            </ul>
+            <p class="refs">Key references: pp. 534-540.</p>
+          `
+        },
+        P: {
+          title: "Likely object: processing style",
+          body: `
+            <p>This branch says that affect is probably functioning as feedback about <em>how</em> the person is currently thinking, not about the external target in the world.</p>
+            <h3>What the older literature often said</h3>
+            <p>Older summaries tended to say that happy mood broadens thought, increases heuristics, and promotes creativity, whereas sad mood narrows thought and encourages systematic processing.</p>
+            <h3>What this chapter adds</h3>
+            <p>The authors argue that those patterns are often real, but they are not fixed consequences of happiness or sadness themselves. Instead, affect says "go" or "stop" to the currently accessible style. Since global and heuristic processing are often the default, positive mood often appears to broaden thought. But if local or systematic processing has been primed first, positive mood can support that instead.</p>
+            <p class="refs">Key references: pp. 538-542.</p>
+          `
+        },
+        R: {
+          title: "By the dependent variable, what feels most salient?",
+          body: `
+            <p>This node captures a general rule running through the chapter: the effect of affect depends on what the feeling seems to be about at the decisive moment.</p>
+            <h3>What is being decided here?</h3>
+            <p>Once attribution has been handled and timing has been located, you still need to ask what is in the foreground when the actual judgment is made. In many procedures, the competition is between the external target and the person's own current take on that target.</p>
+            <h3>Why this matters</h3>
+            <p>Two studies can use the same mood induction and the same nominal target, yet produce different outcomes, simply because one method keeps the target salient while the other makes the participant's own thoughts more salient.</p>
+            <p class="refs">Key references: pp. 534-537, 542.</p>
+          `
+        },
+        J: {
+          title: "Likely object: one's own thoughts",
+          body: `
+            <p>This is the self-validation side of the chapter. Affect is no longer mainly coloring the target itself. Instead it is operating as feedback about the person's own currently accessible thought, judgment, or inclination.</p>
+            <h3>Why this is a big deal</h3>
+            <p>This is the key move that explains the chapter's most striking reversals. If the person is already leaning negative, positive affect can validate that negativity and make the final judgment <em>more</em> negative, not less.</p>
+            <h3>Main examples</h3>
+            <ul>
+              <li>The Lance Armstrong and Alex Rodriguez studies.</li>
+              <li>The trustworthiness findings, where happy mood increased trust for trustworthy faces but lowered trust for untrustworthy ones.</li>
+              <li>The persuasion reversal when mood is induced after participants have generated thoughts about the arguments.</li>
+            </ul>
+            <p class="refs">Key references: pp. 536-537, 540, 542.</p>
+          `
+        },
+        T: {
+          title: "Affect read as about the target",
+          body: `
+            <p>This is the most familiar affect-as-information pattern. The feeling is treated as a reaction to the target itself, so positive affect makes the target look better and negative affect makes it look worse.</p>
+            <h3>Important qualification</h3>
+            <p>The chapter does not stop at this simple rule. Once the target branch is active, you still need to ask whether you are dealing with generic mood valence or with a more specific emotion whose appraisal content narrows the prediction.</p>
+            <h3>Representative target-level cases</h3>
+            <ul>
+              <li>Life satisfaction judgments on good vs bad weather days.</li>
+              <li>Evaluations of a neutral face after unattributed negative affect.</li>
+              <li>Negative evaluations of worldview-threatening scientific research.</li>
+              <li>Harshness in mock-juror judgments when distressing consequences are salient.</li>
+            </ul>
+            <p class="refs">Key references: pp. 534-536.</p>
+          `
+        },
+        T2: {
+          title: "Specific emotion?",
+          body: `
+            <p>This is the point where the chapter shifts from general mood valence to appraisal-specific emotion effects. Not every negative emotion means the same thing, and the same is true in principle for positive emotions as well.</p>
+            <h3>What this decision does</h3>
+            <p>If there is no clear discrete emotion, the generic positive-versus-negative carryover rule is often enough. If there <em>is</em> a specific emotion, the better prediction comes from asking what that emotion is about.</p>
+            <h3>How to use it</h3>
+            <p>Sadness points toward undesirable outcomes and effort, anger toward blameworthy agency, fear toward threat and danger, and disgust toward contamination or moral taint.</p>
+            <p class="refs">Key references: pp. 535-536.</p>
+          `
+        },
+        TG: {
+          title: "General valence carryover",
+          body: `
+            <p>This is the simplest target-judgment prediction in the chapter. If the feeling still seems to be about the target and no discrete-emotion pattern is doing extra work, then positive affect improves the evaluation and negative affect worsens it.</p>
+            <h3>Use this branch when</h3>
+            <ul>
+              <li>the target is salient,</li>
+              <li>the feeling has not been attributed away, and</li>
+              <li>there is no stronger appraisal-specific emotion story.</li>
+            </ul>
+            <h3>Examples</h3>
+            <p>The weather study and the fear-face spillover study are the clearest illustrations of this generic carryover logic.</p>
+            <p class="refs">Examples: weather and life satisfaction; neutral-face spillover. pp. 534-535.</p>
+          `
+        },
+        TO: {
+          title: "Other specific emotion: use appraisal match",
+          body: `
+            <p>This node keeps the chart from falsely implying that only sadness, anger, fear, and disgust matter. The chapter's actual rule is broader: if an emotion has a distinctive appraisal pattern, that pattern should guide your prediction.</p>
+            <h3>How to think with this node</h3>
+            <p>Ask what the emotion represents. Is it about blame, threat, effort, certainty, contamination, success, relief, or something else? Then ask whether the judgment task is about that same kind of thing.</p>
+            <h3>Why this is faithful to the chapter</h3>
+            <p>The authors repeatedly emphasize that emotion effects depend on similarity between the appraisal structure of the emotion and the structure of the judgment to be made.</p>
+            <p class="refs">Key references: pp. 535-536, 542.</p>
+          `
+        },
+        TS: {
+          title: "Sadness branch",
+          body: `
+            <p>Sadness is treated in the chapter as an emotion about undesirable outcomes, burden, loss, and sometimes effort. That means sadness does not simply make everything vaguely negative. It tunes judgment toward a particular kind of negativity.</p>
+            <h3>Main outcomes the chapter reports</h3>
+            <ul>
+              <li>Sadness increased judgments that events were caused by situations rather than blameworthy agents.</li>
+              <li>Sadness reversed the endowment effect by making people more sensitive to undesirable outcomes.</li>
+              <li>Sadness made a hill look steeper when participants stood at the bottom, which the authors interpret as an exaggeration of the effort of climbing.</li>
+            </ul>
+            <h3>Why this matters</h3>
+            <p>These outcomes make sense only if sadness is carrying information about bad outcomes and effort, not just "badness" in a generic sense.</p>
+            <p class="refs">Key references: pp. 535-536.</p>
+          `
+        },
+        TA: {
+          title: "Anger branch",
+          body: `
+            <p>Anger is the chapter's cleanest example of an emotion organized around blameworthy agency. When anger carries over, it does not merely produce negativity. It points judgment toward human cause, fault, and responsibility.</p>
+            <h3>Main finding</h3>
+            <p>In the comparison with sadness, anger increased judgments that negative events were caused by people rather than by situations.</p>
+            <h3>Takeaway</h3>
+            <p>If the task asks who is to blame, anger is much more diagnostic than sadness, even though both are negative emotions.</p>
+            <p class="refs">Key reference: p. 535.</p>
+          `
+        },
+        TF: {
+          title: "Fear branch",
+          body: `
+            <p>Fear and anxiety are treated as emotions about anticipated threat and undesirable future outcomes. When they carry over into judgment, they tend to increase perceived danger, risk, and the need for safety.</p>
+            <h3>Examples the chapter gives</h3>
+            <ul>
+              <li>Higher perceived risk of terrorism.</li>
+              <li>A stronger focus on the safety of consumer products.</li>
+              <li>Overestimation of balcony height when looking down from above.</li>
+              <li>Steeper judgments of a hill when viewed from the top while standing on a skateboard.</li>
+            </ul>
+            <h3>Interpretation</h3>
+            <p>The authors' reading is that fear exaggerates the dangerous aspect of the situation, not just its unpleasantness.</p>
+            <p class="refs">Key reference: p. 536.</p>
+          `
+        },
+        TD: {
+          title: "Disgust branch",
+          body: `
+            <p>Disgust concerns contamination, aversion, and moral taint. It therefore predicts a distinctive pattern of rejection rather than a generic negative reaction.</p>
+            <h3>Object-value effects</h3>
+            <p>In endowment-effect work, disgust reduced the selling price of owned objects because the objects themselves seemed more distasteful.</p>
+            <h3>Moral-judgment effects</h3>
+            <p>The chapter reviews work showing harsher moral judgments after disgusting smells, disgusting workspaces, disgusting memories, or disgusting films. It also notes the reverse pattern: cleansing can reduce moral severity.</p>
+            <h3>Why the chapter cares about this</h3>
+            <p>Disgust helps show that the content of an emotion matters. Disgust and sadness are both negative, but they influence judgment in different ways because they represent different problems.</p>
+            <p class="refs">Key references: pp. 535-536.</p>
+          `
+        },
+        JV: {
+          title: "Affective cue within the self-validation branch",
+          body: `
+            <p>Once one's own thoughts are salient, the next question is not "is the mood positive or negative?" by itself. The right question is: what is the mood doing to the person's confidence in those thoughts?</p>
+            <h3>The chapter's proposal</h3>
+            <p>Positive affect often functions like validation or confidence. Negative affect often functions like doubt or invalidation. The outcome then depends on whether the thought being validated or invalidated is positive or negative.</p>
+            <h3>Why this generates reversals</h3>
+            <p>If the currently accessible thought is negative, a positive mood can make the final judgment more negative. That is the opposite of what a simple mood-congruence model would predict.</p>
+            <p class="refs">Key references: pp. 537, 540, 542.</p>
+          `
+        },
+        JVP: {
+          title: "Positive affect validates the current thought",
+          body: `
+            <p>This is the self-validation version of a "go" signal. Positive affect makes the currently accessible thought feel more trustworthy, more compelling, and more usable.</p>
+            <h3>What this does not mean</h3>
+            <p>It does <em>not</em> mean that positive mood simply makes the final judgment positive. It means that the current thought gets a boost. If that thought is positive, the judgment becomes more positive. If that thought is negative, the judgment can become more negative.</p>
+            <h3>Where to look for this in the chapter</h3>
+            <p>The strongest cases are the post-argument persuasion findings and the disgraced-athlete studies.</p>
+            <p class="refs">Key references: pp. 537, 540.</p>
+          `
+        },
+        JVN: {
+          title: "Negative affect invalidates the current thought",
+          body: `
+            <p>This is the self-validation version of a "stop" signal. Negative affect makes the current thought feel less secure or less worthy of reliance.</p>
+            <h3>Why this is easy to misunderstand</h3>
+            <p>People often assume that negative affect should make judgments more negative. On this branch, that is not the right prediction. Negative affect mainly <em>weakens the thought currently in hand</em>. Depending on the thought's valence, the judgment may become less positive, less extreme, or more hesitant.</p>
+            <p class="refs">Key references: pp. 537, 540.</p>
+          `
+        },
+        J2: {
+          title: "If validation is operating, what is the thought's valence?",
+          body: `
+            <p>This node asks what exactly is being validated. Validation is not a one-direction process. It simply intensifies the thought that is already accessible.</p>
+            <h3>Practical meaning</h3>
+            <p>If the current thought is favorable, validation strengthens favorable judgment. If the current thought is unfavorable, validation strengthens unfavorable judgment. This is the key mechanism behind the chapter's 'happy mood can lead to harsher judgment' result.</p>
+            <p class="refs">Key references: pp. 536-537, 540.</p>
+          `
+        },
+        J3: {
+          title: "If invalidation is operating, what is the thought's valence?",
+          body: `
+            <p>This is the mirror image of the previous node. Invalidation weakens whatever thought is active, so the effect depends on whether the active thought was positive or negative.</p>
+            <h3>Practical meaning</h3>
+            <p>If the active thought was positive, the final judgment becomes less positive or less confident. If the active thought was negative, the final judgment can become less extreme or more tentative.</p>
+            <p class="refs">Key references: pp. 536-537, 540.</p>
+          `
+        },
+        JP: {
+          title: "Validated positive thought",
+          body: `
+            <p>This is the straightforward self-validation case: the accessible thought is positive, and positive affect makes that thought feel more trustworthy.</p>
+            <h3>Best chapter example</h3>
+            <p>In persuasion studies where mood was induced after participants had generated thoughts about strong and weak arguments, positive affect validated their reactions. Positive thoughts about strong arguments felt more convincing, so strong arguments became more persuasive.</p>
+            <h3>Why it matters theoretically</h3>
+            <p>From the outside, this can look like ordinary mood congruence. But the chapter's point is that the mechanism is not "happy equals positive target." It is "happy validates current thought."</p>
+            <p class="refs">Key reference: p. 540.</p>
+          `
+        },
+        JN: {
+          title: "Validated negative thought",
+          body: `
+            <p>This is the chapter's signature reversal. The accessible thought is already negative, and positive affect validates it. The final judgment therefore becomes more negative or more extreme.</p>
+            <h3>Case study: Lance Armstrong</h3>
+            <p>Participants were evaluating material associated with Armstrong after his doping scandal had made him a negatively framed figure. Positive mood did not soften judgment. It strengthened confidence in their negative take.</p>
+            <h3>Case study: Alex Rodriguez</h3>
+            <p>The same pattern appeared when participants rated an A-Rod poster after rumors about performance-enhancing drugs had been confirmed.</p>
+            <h3>Related finding</h3>
+            <p>In trustworthiness judgments, positive mood increased trust for trustworthy faces but decreased trust for untrustworthy faces. Again, mood was validating the judge's accessible response, not simply painting everything rosy.</p>
+            <p class="refs">Key references: pp. 536-537.</p>
+          `
+        },
+        JM: {
+          title: "Invalidated positive thought",
+          body: `
+            <p>Here negative affect weakens confidence in a positive thought. The result is usually not a dramatic reversal so much as a flatter, less confident, or less enthusiastic judgment.</p>
+            <h3>Where the chapter uses this logic</h3>
+            <p>In the post-argument persuasion pattern, negative affect after thought generation reduced reliance on the positive thoughts participants had about strong arguments. That helps explain why sad participants, in that timing setup, no longer showed the usual strong distinction between strong and weak messages.</p>
+            <p class="refs">Key references: pp. 537, 540.</p>
+          `
+        },
+        JL: {
+          title: "Invalidated negative thought",
+          body: `
+            <p>Here negative affect weakens a negative thought. The result can be a less harsh, less extreme, or more tentative negative judgment.</p>
+            <h3>How to interpret it</h3>
+            <p>This is the logical complement to the Armstrong and A-Rod findings. If positive mood can make a negative view feel more convincing, negative mood can make that same view feel less certain.</p>
+            <p>This branch is especially important for avoiding a common mistake: negative affect is not always pushing judgment in a more negative direction. Sometimes it is reducing confidence in an already negative reaction.</p>
+            <p class="refs">Key references: pp. 536-537.</p>
+          `
+        },
+        PV: {
+          title: "Affective cue within the processing-style branch",
+          body: `
+            <p>This node expresses the chapter's affective processing principle. In task situations, affect can function as feedback about the current cognitive orientation rather than as information about the outside world.</p>
+            <h3>Short version</h3>
+            <p>Positive affect often says "go with this style." Negative affect often says "stop and question this style."</p>
+            <h3>Why this matters</h3>
+            <p>This is what lets the authors preserve many classic findings while rejecting the idea that happiness and sadness have fixed, hardwired processing consequences.</p>
+            <p class="refs">Key references: pp. 539-542.</p>
+          `
+        },
+        PVP: {
+          title: "Positive affect as a 'go' signal",
+          body: `
+            <p>This node predicts that positive affect will support the currently accessible processing style. If the default style is global or heuristic, happy mood often looks broad and intuitive. If a local or systematic style has been primed, happy mood can support that instead.</p>
+            <h3>Why this is so important</h3>
+            <p>It means that positive affect is not inherently broad, creative, or careless. Those outcomes occur only when the currently accessible style is the one being amplified.</p>
+            <p class="refs">Key references: pp. 539-542.</p>
+          `
+        },
+        PVN: {
+          title: "Negative affect as a 'stop' signal",
+          body: `
+            <p>This node predicts that negative affect interrupts the currently accessible style. Sometimes that looks like more care and more scrutiny because the default heuristic style is being interrupted. In other cases, especially after priming, it produces a reversal because the primed style itself is what gets inhibited.</p>
+            <h3>What this helps explain</h3>
+            <p>It explains why sad mood can sometimes make people more systematic and at other times, after a local or systematic prime, undo that primed style and produce the opposite pattern.</p>
+            <p class="refs">Key references: pp. 539-542.</p>
+          `
+        },
+        P2: {
+          title: "If positive affect is operating, what style is dominant?",
+          body: `
+            <p>This node asks which style is getting the "go" signal. The answer to that question determines whether the observable result looks like broadened attention, more heuristics, more creativity, more stereotyping, or instead a more local or more systematic style.</p>
+            <p>The logic is simple but powerful: positive affect does not pick the style. It amplifies the style that is already accessible.</p>
+            <p class="refs">Key references: pp. 539-542.</p>
+          `
+        },
+        P3: {
+          title: "If negative affect is operating, what style is dominant?",
+          body: `
+            <p>This node asks which style is being interrupted. Negative affect does not supply a single replacement style. Rather, it weakens or questions the dominant orientation that is already active.</p>
+            <p>That is why negative affect can sometimes produce careful analysis and sometimes produce a reversal of a primed local or systematic style.</p>
+            <p class="refs">Key references: pp. 539-542.</p>
+          `
+        },
+        PG: {
+          title: "Positive affect plus a global or heuristic default",
+          body: `
+            <p>This is the classic pattern that made earlier researchers think happy mood had a fixed tendency to broaden cognition. If the default style is already global, heuristic, category-based, or intuitive, positive affect will often amplify that orientation.</p>
+            <h3>Examples the chapter groups here</h3>
+            <ul>
+              <li>Broadened attention.</li>
+              <li>Less discrimination of weak versus strong arguments in pre-message persuasion tasks.</li>
+              <li>Greater reliance on stereotypes in ordinary cases.</li>
+              <li>Often more creativity, because global processing is usually the dominant orientation.</li>
+            </ul>
+            <h3>Important caveat</h3>
+            <p>The chapter does not say these findings are false. It says they are conditional on the default style being the one that gets the "go" signal.</p>
+            <p class="refs">Key references: pp. 538-541.</p>
+          `
+        },
+        PL: {
+          title: "Positive affect plus a local or systematic primed style",
+          body: `
+            <p>This branch is one of the strongest demonstrations that mood effects are malleable rather than fixed. If a local or systematic style has been made dominant first, positive affect can intensify that style instead of broadening thought.</p>
+            <h3>Examples</h3>
+            <ul>
+              <li>Local primes made happy mood produce more local attention rather than broader attention.</li>
+              <li>Systematic primes erased or reversed some classic heuristic mood effects.</li>
+              <li>Among chronic egalitarians, positive affect reduced rather than increased stereotyping because the accessible response was counterstereotypic.</li>
+            </ul>
+            <h3>Why it matters</h3>
+            <p>This is one of the chapter's clearest arguments against a simple "happy = broad" rule.</p>
+            <p class="refs">Key references: pp. 539-542.</p>
+          `
+        },
+        PM: {
+          title: "Negative affect plus a global or heuristic default",
+          body: `
+            <p>Here negative affect interrupts the ordinary default style. Because the default is often broad, heuristic, or category-based, the observed outcome looks like more care, more checking, and more discrimination.</p>
+            <h3>Best-known example</h3>
+            <p>In the classic persuasion pattern where mood is induced before message exposure, sad participants distinguished strong from weak arguments more than happy participants did.</p>
+            <h3>Interpretive payoff</h3>
+            <p>The chapter treats this not as proof that sadness is inherently systematic, but as evidence that negative affect can interrupt the usual heuristic default.</p>
+            <p class="refs">Key references: pp. 538-541.</p>
+          `
+        },
+        PR: {
+          title: "Negative affect plus a local or systematic primed style",
+          body: `
+            <p>This is the reversal-rich branch. If the primed style itself is local or systematic, negative affect can inhibit it. The result can therefore look opposite to the standard textbook pattern.</p>
+            <h3>Examples the chapter highlights</h3>
+            <ul>
+              <li>Sad mood after local priming improved creativity, because the local focus that usually suppresses creativity was interrupted.</li>
+              <li>Local priming changed broadened-attention findings.</li>
+              <li>Systematic priming changed anchoring and conjunction-fallacy results.</li>
+            </ul>
+            <h3>Why this branch matters</h3>
+            <p>It shows that the effects of affect on thinking are not fixed traits of the mood itself. They depend on what style is currently dominant when affect delivers its "stop" signal.</p>
+            <p class="refs">Key references: pp. 539-542.</p>
+          `
+        },
+        PN: {
+          title: "No dominant style",
+          body: `
+            <p>If there is no clearly dominant response tendency, affect has nothing obvious to validate or inhibit. In that situation the chapter predicts weak, inconsistent, or absent mood effects.</p>
+            <h3>Main example</h3>
+            <p>The clearest case is the 50-50 global-local priming condition. Because neither style was dominant, there was no strong orientation for positive affect to amplify or for negative affect to interrupt.</p>
+            <h3>Interpretive value</h3>
+            <p>This branch is important because it shows that null mood effects can be theoretically meaningful. A null result is not always a failure. Sometimes it is exactly what the model predicts.</p>
+            <p class="refs">Key reference: p. 540.</p>
+          `
+        }
+      };
+
+      const modal = document.getElementById("node-modal");
+      const modalTitle = document.getElementById("node-modal-title");
+      const modalBody = document.getElementById("node-modal-body");
+      const closeButton = document.getElementById("node-modal-close");
+
+      function openModal(nodeId) {
+        const entry = detailMap[nodeId] || {
+          title: nodeId,
+          body: `<p>No custom note was found for <code>${nodeId}</code>, but the node is still part of the active diagram.</p>`
+        };
+
+        modalTitle.textContent = entry.title;
+        modalBody.innerHTML = entry.body;
+        modal.hidden = false;
+        modal.classList.add("is-open");
+        document.body.classList.add("modal-open");
+      }
+
+      function closeModal() {
+        modal.classList.remove("is-open");
+        modal.hidden = true;
+        document.body.classList.remove("modal-open");
+      }
+
+      window.nodeModal = openModal;
+
+      mermaid.initialize({
+        startOnLoad: true,
+        securityLevel: "loose",
+        theme: "base",
+        themeVariables: {
+          primaryColor: "#f9f6ef",
+          primaryTextColor: "#1f1d19",
+          primaryBorderColor: "#8a816f",
+          lineColor: "#746956",
+          secondaryColor: "#e8efe5",
+          tertiaryColor: "#f4e1d4",
+          fontFamily: '"Iowan Old Style", "Palatino Linotype", Georgia, serif'
+        },
+        flowchart: {
+          htmlLabels: true,
+          curve: "basis",
+          nodeSpacing: 40,
+          rankSpacing: 70
+        }
+      });
+
+      closeButton.addEventListener("click", closeModal);
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !modal.hidden) {
+          closeModal();
+        }
+      });
+    </script>
+  </body>
+</html>
